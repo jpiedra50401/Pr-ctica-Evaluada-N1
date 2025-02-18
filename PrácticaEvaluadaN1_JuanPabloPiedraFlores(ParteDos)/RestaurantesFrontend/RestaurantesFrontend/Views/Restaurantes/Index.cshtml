@@ -1,0 +1,149 @@
+﻿@model List<RestaurantesFrontend.Models.Restaurante>
+
+<!-- Agregar SweetAlert2 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center text-primary">🍽️ Lista de Restaurantes</h2>
+
+    <!-- Formulario con estilos mejorados -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h4 class="text-secondary">Agregar Restaurante</h4>
+        <form method="post" asp-controller="Restaurantes" asp-action="Agregar" class="mb-4" onsubmit="return validarFormulario()">
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="text" id="Nombre" name="Nombre" class="form-control" placeholder="Nombre" required>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" id="Dueño" name="Dueño" class="form-control" placeholder="Dueño" required>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" id="Provincia" name="Provincia" class="form-control" placeholder="Provincia" required>
+                </div>
+                <div class="col-md-4 mt-2">
+                    <input type="text" id="Canton" name="Canton" class="form-control" placeholder="Cantón" required>
+                </div>
+                <div class="col-md-4 mt-2">
+                    <input type="text" id="Distrito" name="Distrito" class="form-control" placeholder="Distrito" required>
+                </div>
+                <div class="col-md-4 mt-2">
+                    <input type="text" id="DireccionExacta" name="DireccionExacta" class="form-control" placeholder="Dirección Exacta" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success mt-3">➕ Agregar Restaurante</button>
+        </form>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div id="mensajeError" class="alert alert-danger mt-3" style="display: none;"></div>
+
+    <!-- Tabla de Restaurantes con estilos mejorados -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="text-secondary">📋 Restaurantes Registrados</h4>
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Dueño</th>
+                        <th>Provincia</th>
+                        <th>Cantón</th>
+                        <th>Distrito</th>
+                        <th>Dirección</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var restaurante in Model)
+                    {
+                        <tr>
+                            <td>@restaurante.Nombre</td>
+                            <td>@restaurante.Dueño</td>
+                            <td>@restaurante.Provincia</td>
+                            <td>@restaurante.Canton</td>
+                            <td>@restaurante.Distrito</td>
+                            <td>@restaurante.DireccionExacta</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" onclick="eliminarRestaurante(@restaurante.Id)">
+                                    🗑️ Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Validación del formulario antes de enviar
+    function validarFormulario() {
+        let nombre = document.getElementById("Nombre").value.trim();
+        let dueño = document.getElementById("Dueño").value.trim();
+        let provincia = document.getElementById("Provincia").value.trim();
+        let canton = document.getElementById("Canton").value.trim();
+        let distrito = document.getElementById("Distrito").value.trim();
+        let direccion = document.getElementById("DireccionExacta").value.trim();
+        let mensajeError = document.getElementById("mensajeError");
+
+        if (!nombre || !dueño || !provincia || !canton || !distrito || !direccion) {
+            mensajeError.style.display = "block";
+            mensajeError.innerText = "Todos los campos son obligatorios.";
+            return false;
+        }
+
+        if (nombre.length > 100) {
+            mensajeError.style.display = "block";
+            mensajeError.innerText = "El nombre no puede tener más de 100 caracteres.";
+            return false;
+        }
+
+        if (direccion.length > 255) {
+            mensajeError.style.display = "block";
+            mensajeError.innerText = "La dirección no puede tener más de 255 caracteres.";
+            return false;
+        }
+
+        mensajeError.style.display = "none";
+        return true;
+    }
+
+    // Función para eliminar un restaurante con SweetAlert2
+    function eliminarRestaurante(id) {
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "Esta acción no se puede deshacer.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`https://localhost:7165/api/restaurantes/${id}`, { // Dirección correcta del API
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire("Eliminado", "El restaurante ha sido eliminado.", "success")
+                            .then(() => location.reload()); // Recargar después de eliminar
+                    } else {
+                        return response.text().then(text => {
+                            throw new Error(text);
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.fire("Error", "No se pudo eliminar el restaurante.", "error");
+                    console.error("Error:", error);
+                });
+            }
+        });
+    }
+</script>

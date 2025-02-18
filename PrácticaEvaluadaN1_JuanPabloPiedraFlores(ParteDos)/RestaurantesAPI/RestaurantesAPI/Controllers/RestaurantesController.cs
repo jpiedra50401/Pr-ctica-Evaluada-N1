@@ -30,14 +30,13 @@ namespace RestaurantesAPI.Controllers
             }
         }
 
-
         // POST: api/restaurantes → Agregar un restaurante
         [HttpPost]
         public async Task<ActionResult<Restaurante>> PostRestaurante([FromBody] Restaurante restaurante)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ModelState);  // Devuelve los errores de validación al frontend
             }
 
             _context.Restaurantes.Add(restaurante);
@@ -53,20 +52,26 @@ namespace RestaurantesAPI.Controllers
         {
             try
             {
+                Console.WriteLine($"Intentando eliminar restaurante con ID: {id}");
+
                 var restaurante = await _context.Restaurantes.FindAsync(id);
                 if (restaurante == null)
                 {
+                    Console.WriteLine("⚠ Restaurante no encontrado en la base de datos.");
                     return NotFound(new { message = "Restaurante no encontrado" });
                 }
 
                 _context.Restaurantes.Remove(restaurante);
                 await _context.SaveChangesAsync();
 
+                Console.WriteLine("✅ Restaurante eliminado correctamente.");
                 return Ok(new { message = "Restaurante eliminado con éxito" });
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"❌ Error al eliminar restaurante: {ex.Message}");
                 return StatusCode(500, new { message = "Error al eliminar restaurante", details = ex.Message });
+
             }
         }
     }

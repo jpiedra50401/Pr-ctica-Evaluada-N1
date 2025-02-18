@@ -49,18 +49,23 @@ namespace RestaurantesFrontend.Controllers
         }
 
         // POST: Eliminar Restaurante
-        [HttpPost]
-        public async Task<IActionResult> Eliminar(int id)
+        [HttpPost("Eliminar")]
+        public async Task<IActionResult> Eliminar([FromForm] int id)
         {
-            var response = await _httpClient.DeleteAsync($"{id}");
+            Console.WriteLine($"🟡 Enviando solicitud DELETE para el restaurante con ID: {id}");
+
+            var response = await _httpClient.DeleteAsync($"https://localhost:7165/api/restaurantes/{id}");
 
             if (!response.IsSuccessStatusCode)
             {
-                TempData["Error"] = "No se pudo eliminar el restaurante.";
+                Console.WriteLine($"🔴 Error al eliminar restaurante con ID: {id}, Código: {response.StatusCode}");
+                return BadRequest($"No se pudo eliminar el restaurante con ID {id}.");
             }
 
+            Console.WriteLine($"✅ Restaurante con ID {id} eliminado correctamente.");
             return RedirectToAction("Index");
         }
+
 
     }
 }
