@@ -1,0 +1,64 @@
+##Práctica evaluada N1 Juan Pablo Piedra Flores (Parte Uno)
+
+##Objetivo: Documentar cómo se desarrollará la solución, incluyendo tecnologías, arquitectura y procesos.
+
+##Introduccion:
+La cadena de restaurantes requiere un sistema para gestionar la información de sus establecimientos, permitiendo visualizar, agregar y eliminar restaurantes a través de una aplicación web. Este documento describe la solución técnica propuesta para abordar esta necesidad.
+
+##Tecnologías a utilizar:
+
+-Back-End: ASP.NET Core Web API
+-Front-End: ASP.NET Core MVC o Razor Pages con Bootstrap
+-Base de Datos: MySQL
+-ORM: Entity Framework Core
+-Herramientas de Desarrollo: Visual Studio 2022
+-Consumo de API: HttpClient
+
+##Arquitectura de la solución:
+
+-El sistema seguirá un modelo cliente-servidor con los siguientes componentes:
+-API RESTful: Responsable de gestionar los datos de los restaurantes.
+-Aplicación Web: Interfaz gráfica que consume la API y permite a los usuarios interactuar con los datos.
+-Base de Datos MySQL: Almacena la información de los restaurantes.
+
+##Procesos y procedimientos:
+
+%Visualización de Restaurantes
+-El usuario accede a la aplicación web.
+-La aplicación realiza una petición GET /api/restaurantes al API.
+-El API recupera la información desde la base de datos y la devuelve en formato JSON.
+-La aplicación web muestra la lista de restaurantes con los siguientes datos:
+--Nombre
+--Dueño
+--Provincia, Cantón, Distrito
+--Dirección Exacta
+
+%Agregar Restaurantes
+-El usuario accede al formulario de creación de restaurante.
+-Completa los datos requeridos.
+-La aplicación web envía una petición POST /api/restaurantes con los datos en formato JSON.
+-El API valida los datos y los almacena en la base de datos.
+-Se devuelve una respuesta de confirmación.
+-La lista de restaurantes se actualiza automáticamente.
+
+%Eliminación de Restaurantes
+-El usuario selecciona un restaurante para eliminar.
+-Se envía una petición DELETE /api/restaurantes/{id} al API.
+-El API elimina el restaurante de la base de datos.
+-La lista de restaurantes se actualiza en la interfaz.
+
+##Consumo de API
+
+-Se utilizará HttpClient para realizar llamadas al API desde el Front-End.
+-Las peticiones serán en formato JSON.
+-Se manejarán errores y respuestas mediante mensajes en la interfaz.
+
+##Seguridad
+
+-Validación de datos antes de ser almacenados.
+-Manejo de errores y excepciones en API y Front-End.
+-Uso de HTTPS para proteger las comunicaciones.
+
+##Conclusión
+
+-Esta propuesta técnica describe la estrategia para desarrollar el sistema de gestión de restaurantes utilizando una arquitectura basada en APIs y una aplicación web en .NET Core. Se garantiza una solución escalable, segura y eficiente para la gestión de restaurantes en la cadena.

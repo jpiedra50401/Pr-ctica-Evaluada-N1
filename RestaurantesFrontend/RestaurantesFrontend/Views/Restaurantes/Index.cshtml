@@ -1,0 +1,70 @@
+﻿@model List<RestaurantesFrontend.Models.Restaurante>
+
+<div class="container mt-4">
+    <h2 class="mb-4">Lista de Restaurantes</h2>
+
+    <!-- Formulario para Agregar Restaurante -->
+    <form method="post" asp-controller="Restaurantes" asp-action="Agregar" class="mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" name="Nombre" class="form-control" placeholder="Nombre" required>
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="Dueño" class="form-control" placeholder="Dueño" required>
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="Provincia" class="form-control" placeholder="Provincia" required>
+            </div>
+            <div class="col-md-4 mt-2">
+                <input type="text" name="Canton" class="form-control" placeholder="Cantón" required>
+            </div>
+            <div class="col-md-4 mt-2">
+                <input type="text" name="Distrito" class="form-control" placeholder="Distrito" required>
+            </div>
+            <div class="col-md-4 mt-2">
+                <input type="text" name="DireccionExacta" class="form-control" placeholder="Dirección Exacta" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Agregar Restaurante</button>
+    </form>
+
+    <!-- Tabla de Restaurantes -->
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Nombre</th>
+                <th>Dueño</th>
+                <th>Provincia</th>
+                <th>Cantón</th>
+                <th>Distrito</th>
+                <th>Dirección</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var restaurante in Model)
+            {
+                <tr>
+                    <td>@restaurante.Nombre</td>
+                    <td>@restaurante.Dueño</td>
+                    <td>@restaurante.Provincia</td>
+                    <td>@restaurante.Canton</td>
+                    <td>@restaurante.Distrito</td>
+                    <td>@restaurante.DireccionExacta</td>
+                    <td>
+                        <form method="post" asp-controller="Restaurantes" asp-action="Eliminar" onsubmit="return confirm('¿Estás seguro de eliminar este restaurante?');">
+                            <input type="hidden" name="id" value="@restaurante.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            @if (TempData["Error"] != null)
+                            {
+                                <div class="alert alert-danger">@TempData["Error"]</div>
+                            }
+
+                        </form>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
